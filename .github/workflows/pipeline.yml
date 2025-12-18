@@ -1,0 +1,17 @@
+name: Ma Premiere CI
+on: [push] # Le robot se réveille dès que tu envoies du code
+
+jobs:
+  job_de_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Recupere le code sur le serveur
+        uses: actions/checkout@v4
+
+      - name: Installe Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12.1'
+
+      - name: Execute mon test de calcul
+        run: python3 test_calcul.py
