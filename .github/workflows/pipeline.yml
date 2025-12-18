@@ -14,4 +14,4 @@ jobs:
           python-version: '3.12.1'
 
       - name: Execute mon test de calcul
-        run: python3 test_calcul.py
+        run: pytest test_calcul.py
