@@ -1,26 +1,18 @@
-name: Ma Premiere CI
+name: Pipeline Docker Pro
+
 on: [push]
 
 jobs:
-  job_de_test:
+  test-docker:
     runs-on: ubuntu-latest
     steps:
       - name: Recupere le code
         uses: actions/checkout@v4
 
-      - name: Installe Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12.1'
+      - name: Construit l'image Docker
+        # Cette étape utilise ton Dockerfile pour tout installer (Python, Pytest, etc.)
+        run: docker build -t mon-image-test .
 
-      - name: Installe Pytest # <--- CETTE ÉTAPE EST NOUVELLE
-        run: pip install pytest
-
-      - name: Execute mon test de calcul
-        run: pytest test_calcul.py
-
-      - name: Installe les dependances
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-        
+      - name: Execute les tests dans le conteneur
+        # Cette étape lance la boîte isolée pour vérifier ton calcul
+        run: docker run mon-image-test
