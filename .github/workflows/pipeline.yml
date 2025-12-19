@@ -1,18 +1,27 @@
-name: Pipeline Docker Pro
+name: CI/CD Docker Complet
 
 on: [push]
 
 jobs:
-  test-docker:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Recupere le code
         uses: actions/checkout@v4
 
-      - name: Construit l'image Docker
-        # Cette étape utilise ton Dockerfile pour tout installer (Python, Pytest, etc.)
-        run: docker build -t mon-image-test .
+      - name: Connexion a Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Execute les tests dans le conteneur
-        # Cette étape lance la boîte isolée pour vérifier ton calcul
-        run: docker run mon-image-test
+      - name: Construction de l'image (Build)
+        # Attention : On ajoute ton nom d'utilisateur devant le nom de l'image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/mon-image-pro:latest .
+
+      - name: Test de l'image
+        run: docker run ${{ secrets.DOCKER_USERNAME }}/mon-image-pro:latest
+
+      - name: Envoi vers Docker Hub (Push)
+        # Cette étape ne se lance que si l'étape précédente (le test) a réussi !
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/mon-image-pro:latest
